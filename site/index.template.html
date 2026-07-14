@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{NAME}} — CV</title>
+<meta name="description" content="Curriculum vitae of {{NAME}} — {{ROLE}}.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --accent: #26415E;
+    --accent-soft: #4A6787;
+    --ink: #1b2430;
+    --muted: #5f6b7a;
+    --bg: #eef1f5;
+    --sheet: #ffffff;
+    --line: rgba(38, 65, 94, 0.14);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--ink);
+    background-color: var(--bg);
+    /* faint blueprint grid — a nod to systems engineering */
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.9rem clamp(1rem, 4vw, 2.5rem);
+    background: rgba(238, 241, 245, 0.85);
+    backdrop-filter: saturate(140%) blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .brand { display: flex; flex-direction: column; line-height: 1.15; }
+  .brand .name {
+    font-family: "Newsreader", Georgia, serif;
+    font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .brand .role { font-size: 0.78rem; color: var(--muted); letter-spacing: 0.01em; }
+
+  .download {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1rem;
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: #fff;
+    background: var(--accent);
+    border-radius: 7px;
+    text-decoration: none;
+    transition: background 0.15s ease, transform 0.15s ease;
+  }
+  .download:hover { background: var(--accent-soft); }
+  .download:active { transform: translateY(1px); }
+  .download:focus-visible { outline: 3px solid var(--accent-soft); outline-offset: 2px; }
+  .download svg { width: 16px; height: 16px; }
+
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: clamp(1.5rem, 5vw, 3rem) 1rem 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(1rem, 3vw, 1.75rem);
+  }
+
+  .page {
+    width: 100%;
+    height: auto;
+    background: var(--sheet);
+    border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(27, 36, 48, 0.08),
+                0 12px 30px rgba(27, 36, 48, 0.12);
+  }
+
+  .empty {
+    max-width: 640px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    background: var(--sheet);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(27, 36, 48, 0.08);
+  }
+  .empty code { background: #eef1f5; padding: 0.1em 0.4em; border-radius: 4px; }
+
+  footer {
+    text-align: center;
+    padding: 2rem 1rem 3rem;
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="name">{{NAME}}</span>
+      <span class="role">{{ROLE}}</span>
+    </div>
+    <a class="download" href="./cv.pdf" download>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/>
+      </svg>
+      Download PDF
+    </a>
+  </header>
+
+  <main>
+    <!-- CV_PAGES -->
+  </main>
+
+  <footer>
+    {{FOOTER_LINKS}}
+  </footer>
+</body>
+</html>
