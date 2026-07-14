@@ -57,9 +57,9 @@ def parse_dateline(line: str):
     if not m:
         return None
     span, note = m.group(1), (m.group(2) or "").strip()
-    # Split only on a dash surrounded by whitespace (the range separator),
+    # Split on " to " or a whitespace-surrounded dash (the range separator),
     # so hyphens inside ISO dates like "2024-01" are preserved.
-    parts = re.split(r"\s+[–—-]\s+", span.strip(), maxsplit=1)
+    parts = re.split(r"\s+(?:to|[–—-])\s+", span.strip(), maxsplit=1)
     start = parts[0].strip()
     end = parts[1].strip() if len(parts) > 1 else ""
     if end.lower() in ONGOING:
@@ -174,10 +174,13 @@ def main():
     basics = {
         "name": fm.get("name", ""),
         "label": fm.get("label", ""),
+        "affiliation": fm.get("affiliation", ""),
         "email": fm.get("email", ""),
         "phone": str(fm.get("phone", "")),
         "url": fm.get("website", ""),
         "citizenship": fm.get("citizenship", ""),
+        "age": str(fm.get("age", "")),
+        "caption": fm.get("caption", ""),
         "photo": fm.get("photo", ""),
         "summary": summary,
         "location": location,
@@ -210,27 +213,165 @@ def main():
           f"{len(resume['education'])} degrees, {len(resume['skills'])} skill groups, "
           f"{len(resume['languages'])} languages.")
 
-    # Render the GitHub Pages landing page from the same data, if the
-    # template is present. CI injects the page images afterwards.
+    # ---- Render the web CV: a real, clickable HTML page from the same data.
     tpl = pathlib.Path("site/index.template.html")
     if tpl.exists():
-        def esc(s):
-            return (str(s).replace("&", "&amp;").replace("<", "&lt;")
-                    .replace(">", "&gt;"))
-        links = []
-        if basics["email"]:
-            links.append(f'<a href="mailto:{basics["email"]}">{esc(basics["email"])}</a>')
-        if fm.get("website"):
-            host = re.sub(r"^https?://", "", fm["website"]).rstrip("/")
-            links.append(f'<a href="{fm["website"]}">{esc(host)}</a>')
-        if fm.get("scholar"):
-            links.append(f'<a href="{fm["scholar"]}">Google Scholar</a>')
-        html = (tpl.read_text(encoding="utf-8")
-                .replace("{{NAME}}", esc(basics["name"]))
-                .replace("{{ROLE}}", esc(basics["label"]))
-                .replace("{{FOOTER_LINKS}}", " ·\n    ".join(links)))
-        pathlib.Path("site/index.html").write_text(html, encoding="utf-8")
-        print("Wrote site/index.html")
+        render_site(resume, fm, tpl)
+
+
+def esc(s):
+    return (str(s).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"))
+
+
+def fmt_date_html(d):
+    if not d:
+        return "Present"
+    parts = str(d).split("-")
+    months = {"01": "Jan", "02": "Feb", "03": "Mar", "04": "Apr", "05": "May",
+              "06": "Jun", "07": "Jul", "08": "Aug", "09": "Sep", "10": "Oct",
+              "11": "Nov", "12": "Dec"}
+    if len(parts) >= 2:
+        return f"{months.get(parts[1], '')} {parts[0]}"
+    return parts[0]
+
+
+def daterange_html(a, b):
+    return f"{fmt_date_html(a)} to {fmt_date_html(b)}"
+
+
+def highlight_html(s):
+    if ": " in s:
+        lead, rest = s.split(": ", 1)
+        return f"<strong>{esc(lead)}:</strong> {esc(rest)}"
+    return esc(s)
+
+
+def logo_html(path):
+    if not path:
+        return ""
+    return f'<img class="logo" src="{esc(path)}" alt="">'
+
+
+def render_site(resume, fm, tpl):
+    import shutil
+    b = resume["basics"]
+
+    # Contact line
+    contact = []
+    if b.get("email"):
+        contact.append(f'<a href="mailto:{esc(b["email"])}">{esc(b["email"])}</a>')
+    if b.get("phone"):
+        contact.append(f'<span>{esc(b["phone"])}</span>')
+    if fm.get("website"):
+        host = re.sub(r"^https?://", "", fm["website"]).rstrip("/")
+        contact.append(f'<a href="{esc(fm["website"])}">{esc(host)}</a>')
+    loc = b.get("location", {})
+    locstr = ", ".join(x for x in [loc.get("city", ""), loc.get("countryName", "")] if x)
+    if locstr:
+        contact.append(f'<span>{esc(locstr)}</span>')
+    if b.get("citizenship"):
+        contact.append(f'<span>{esc(b["citizenship"])}</span>')
+    contact_html = '<span class="sep">·</span>'.join(contact)
+
+    photo_html = ""
+    if b.get("photo"):
+        photo_html = f'<img class="avatar" src="{esc(b["photo"])}" alt="{esc(b["name"])}">'
+
+    # Experience
+    exp = []
+    for j in resume["work"]:
+        note = f' <span class="note">({esc(j["note"])})</span>' if j.get("note") else ""
+        summary = f'<p class="summary">{esc(j["summary"])}</p>' if j.get("summary") else ""
+        bullets = ""
+        if j.get("highlights"):
+            items = "".join(f"<li>{highlight_html(h)}</li>" for h in j["highlights"])
+            bullets = f"<ul>{items}</ul>"
+        exp.append(f'''<article class="entry">
+        <div class="entry-head">
+          <div class="entry-titles">
+            <h3>{esc(j["position"])}{note}</h3>
+            <div class="org">{esc(j["name"])}</div>
+          </div>
+          <div class="entry-meta">
+            <span class="dates">{daterange_html(j.get("startDate",""), j.get("endDate",""))}</span>
+            {logo_html(j.get("logo",""))}
+          </div>
+        </div>
+        {summary}{bullets}
+      </article>''')
+
+    # Education
+    edu = []
+    for e in resume["education"]:
+        area = f', {esc(e["area"])}' if e.get("area") else ""
+        note = f'<div class="edunote">{esc(e["note"])}</div>' if e.get("note") else ""
+        edu.append(f'''<article class="entry">
+        <div class="entry-head">
+          <div class="entry-titles">
+            <h3>{esc(e["studyType"])}<span class="area">{area}</span></h3>
+            <div class="org">{esc(e["institution"])}</div>
+            {note}
+          </div>
+          <div class="entry-meta">
+            <span class="dates">{daterange_html(e.get("startDate",""), e.get("endDate",""))}</span>
+            {logo_html(e.get("logo",""))}
+          </div>
+        </div>
+      </article>''')
+
+    # Skills
+    skills = []
+    for s in resume["skills"]:
+        kw = ", ".join(esc(k) for k in s.get("keywords", []))
+        skills.append(f'<div class="skill-row"><div class="skill-name">{esc(s["name"])}</div>'
+                      f'<div class="skill-kw">{kw}</div></div>')
+
+    langs = '<span class="sep">·</span>'.join(
+        f'{esc(l["language"])} <span class="muted">({esc(l["fluency"])})</span>'
+        for l in resume["languages"])
+
+    pubs = ""
+    scholar = [p for p in b.get("profiles", []) if p.get("network") == "Google Scholar"]
+    if scholar:
+        pubs = (f'Full and up-to-date list of publications available on '
+                f'<a href="{esc(scholar[0]["url"])}">Google Scholar</a>.')
+
+    pdf_name = "CV_" + re.sub(r"\s+", "_", b["name"].strip()) + ".pdf"
+
+    footer = []
+    if b.get("email"):
+        footer.append(f'<a href="mailto:{esc(b["email"])}">{esc(b["email"])}</a>')
+    if fm.get("website"):
+        footer.append(f'<a href="{esc(fm["website"])}">{esc(re.sub(r"^https?://","",fm["website"]).rstrip("/"))}</a>')
+    if scholar:
+        footer.append(f'<a href="{esc(scholar[0]["url"])}">Google Scholar</a>')
+
+    html = (tpl.read_text(encoding="utf-8")
+            .replace("{{NAME}}", esc(b["name"]))
+            .replace("{{ROLE}}", esc(b.get("label", "")))
+            .replace("{{PHOTO}}", photo_html)
+            .replace("{{CONTACT}}", contact_html)
+            .replace("{{SUMMARY}}", esc(b.get("summary", "")))
+            .replace("{{EXPERIENCE}}", "\n".join(exp))
+            .replace("{{EDUCATION}}", "\n".join(edu))
+            .replace("{{SKILLS}}", "\n".join(skills))
+            .replace("{{LANGUAGES}}", langs)
+            .replace("{{PUBLICATIONS}}", pubs)
+            .replace("{{PDF_NAME}}", pdf_name)
+            .replace("{{FOOTER}}", '<span class="sep">·</span>'.join(footer)))
+    pathlib.Path("site/index.html").write_text(html, encoding="utf-8")
+
+    # Copy images into the site so the web page and PDF share one source.
+    src_imgs = pathlib.Path("images")
+    if src_imgs.exists():
+        dst = pathlib.Path("site/images")
+        if dst.exists():
+            shutil.rmtree(dst)
+        shutil.copytree(src_imgs, dst)
+
+    # Tell the CI what to name the compiled PDF.
+    pathlib.Path("site/pdfname.txt").write_text(pdf_name, encoding="utf-8")
+    print(f"Wrote site/index.html and copied images; PDF name: {pdf_name}")
 
 
 if __name__ == "__main__":

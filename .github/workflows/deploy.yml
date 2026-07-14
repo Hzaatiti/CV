@@ -37,27 +37,9 @@ jobs:
         uses: typst-community/setup-typst@v4
 
       - name: Build PDF
-        run: typst compile template.typ site/cv.pdf --root .
-
-      - name: Build page previews (PNG, one per page)
-        run: typst compile template.typ "site/cv-{p}.png" --ppi 200 --root .
-
-      - name: Inject page images into index.html
         run: |
-          imgs=""
-          for f in $(ls site/cv-*.png | sort -V); do
-            name=$(basename "$f")
-            imgs="$imgs<img class=\"page\" src=\"./$name\" alt=\"CV page\" loading=\"lazy\">"
-          done
-          # Replace the placeholder marker with the generated <img> tags
-          python3 - "$imgs" <<'PY'
-          import sys, pathlib
-          imgs = sys.argv[1]
-          p = pathlib.Path("site/index.html")
-          html = p.read_text(encoding="utf-8")
-          html = html.replace("<!-- CV_PAGES -->", imgs)
-          p.write_text(html, encoding="utf-8")
-          PY
+          PDF_NAME=$(cat site/pdfname.txt)
+          typst compile template.typ "site/$PDF_NAME" --root .
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

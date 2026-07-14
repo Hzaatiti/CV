@@ -7,10 +7,16 @@ version to GitHub Pages.
 **You edit one file: [`cv.md`](cv.md).** Everything else is generated.
 
 ```
-cv.md  ──(build.py)──▶  resume.json  ──(Typst)──▶  cv.pdf  +  web page
-   ▲
+cv.md  ──(build.py)──▶  resume.json  ──(Typst)──▶  CV_Hadi_Zaatiti.pdf
+   ▲                          │
+   │                          └──(build.py)──▶  site/index.html  (clickable web CV)
    └── the only file you edit
 ```
+
+The website is a real HTML page with selectable text and working links (not an
+image of the PDF). The downloadable PDF is named automatically from your name,
+e.g. `CV_Hadi_Zaatiti.pdf`. Date ranges read as "Jan 2024 to Present"; to use a
+dash instead, change the one `daterange` line in `template.typ`.
 
 ## How it fits together
 
@@ -42,8 +48,10 @@ readable plain-text CV.
 ### Format rules for `cv.md`
 
 - **Header / contact** live in the YAML block at the top (between the `---`
-  lines): `name`, `label`, `email`, `phone`, `website`, `location`,
-  `citizenship`, `scholar`.
+  lines): `name`, `label`, `affiliation`, `email`, `phone`, `website`,
+  `location`, `citizenship`, `age`, `caption`, `scholar`, `photo`. In the PDF
+  these fill the bordered contact box (with icons from `images/icons/`), the
+  name, and the photo + caption, matching the original three-column header.
 - The **`>` blockquote** right after the header is your summary.
 - **`## Experience`** and **`## Education`** hold entries shaped like:
 

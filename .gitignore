@@ -1,12 +1,11 @@
 # Generated from cv.md by build.py — do not edit by hand
 resume.json
 site/index.html
+site/images/
+site/pdfname.txt
 
 # Build outputs
-site/cv.pdf
-site/cv-*.png
-*.pdf
-!.gitkeep
+site/*.pdf
 
 # OS / editor cruft
 .DS_Store

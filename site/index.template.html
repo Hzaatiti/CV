@@ -3,139 +3,164 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{NAME}} — CV</title>
-<meta name="description" content="Curriculum vitae of {{NAME}} — {{ROLE}}.">
+<title>{{NAME}} CV</title>
+<meta name="description" content="Curriculum vitae of {{NAME}}. {{ROLE}}.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --accent: #26415E;
-    --accent-soft: #4A6787;
-    --ink: #1b2430;
-    --muted: #5f6b7a;
-    --bg: #eef1f5;
-    --sheet: #ffffff;
-    --line: rgba(38, 65, 94, 0.14);
+  :root{
+    --accent:#2c4b8e; --accent-soft:#4a68a8; --red:#9e2b22; --ink:#1c2530; --muted:#5d6b7a;
+    --sheet:#ffffff; --rule:#e2e7ee; --tag:#eef2f7;
   }
-  * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-  body {
-    margin: 0;
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    color: var(--ink);
-    background-color: var(--bg);
-    /* faint blueprint grid — a nod to systems engineering */
-    background-image:
-      linear-gradient(var(--line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--line) 1px, transparent 1px);
-    background-size: 32px 32px;
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}}
+  body{
+    margin:0; color:var(--ink);
+    font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    font-size:15px; line-height:1.55;
+    background:radial-gradient(1200px 600px at 50% -10%, #f2f5f9 0%, #e8ecf2 55%, #e2e7ee 100%);
+    min-height:100vh;
   }
 
-  header {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.9rem clamp(1rem, 4vw, 2.5rem);
-    background: rgba(238, 241, 245, 0.85);
-    backdrop-filter: saturate(140%) blur(8px);
-    border-bottom: 1px solid var(--line);
+  /* top bar */
+  .bar{
+    position:sticky; top:0; z-index:20;
+    display:flex; align-items:center; justify-content:space-between; gap:1rem;
+    padding:.7rem clamp(1rem,4vw,2rem);
+    background:rgba(240,243,247,.82); backdrop-filter:saturate(150%) blur(10px);
+    border-bottom:1px solid var(--rule);
   }
-  .brand { display: flex; flex-direction: column; line-height: 1.15; }
-  .brand .name {
-    font-family: "Newsreader", Georgia, serif;
-    font-size: clamp(1.15rem, 2.4vw, 1.5rem);
-    font-weight: 600;
-    color: var(--accent);
+  .bar .who{font-family:"Newsreader",Georgia,serif; font-weight:600; color:var(--accent); font-size:1.05rem;}
+  .btn{
+    display:inline-flex; align-items:center; gap:.45rem; flex:none;
+    padding:.5rem .95rem; border-radius:8px; font-weight:600; font-size:.85rem;
+    color:#fff; background:var(--accent); text-decoration:none;
+    transition:background .15s ease, transform .1s ease;
   }
-  .brand .role { font-size: 0.78rem; color: var(--muted); letter-spacing: 0.01em; }
+  .btn:hover{background:var(--accent-soft);}
+  .btn:active{transform:translateY(1px);}
+  .btn:focus-visible{outline:3px solid var(--accent-soft); outline-offset:2px;}
+  .btn svg{width:15px;height:15px;}
 
-  .download {
-    flex: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.55rem 1rem;
-    font-size: 0.86rem;
-    font-weight: 600;
-    color: #fff;
-    background: var(--accent);
-    border-radius: 7px;
-    text-decoration: none;
-    transition: background 0.15s ease, transform 0.15s ease;
+  /* sheet */
+  .sheet{
+    max-width:880px; margin:clamp(1rem,4vw,2.5rem) auto; background:var(--sheet);
+    border-radius:14px; overflow:hidden;
+    box-shadow:0 1px 2px rgba(28,37,48,.06), 0 18px 50px rgba(28,37,48,.12);
   }
-  .download:hover { background: var(--accent-soft); }
-  .download:active { transform: translateY(1px); }
-  .download:focus-visible { outline: 3px solid var(--accent-soft); outline-offset: 2px; }
-  .download svg { width: 16px; height: 16px; }
+  .sheet-accent{height:5px; background:linear-gradient(90deg,var(--accent),var(--accent-soft));}
+  .inner{padding:clamp(1.5rem,5vw,3rem);}
 
-  main {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: clamp(1.5rem, 5vw, 3rem) 1rem 4rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: clamp(1rem, 3vw, 1.75rem);
-  }
+  /* header */
+  header.cv{display:flex; align-items:center; gap:1.5rem; justify-content:space-between;}
+  header.cv .name{font-family:"Newsreader",Georgia,serif; font-weight:600; color:#1a1a1a;
+    font-size:clamp(1.8rem,5vw,2.5rem); line-height:1.05; margin:0;}
+  header.cv .role{color:var(--muted); font-size:1rem; margin:.35rem 0 0;}
+  .avatar{width:104px; height:134px; object-fit:cover; border-radius:10px; flex:none;
+    box-shadow:0 2px 10px rgba(28,37,48,.18);}
+  .contact{margin-top:.9rem; font-size:.9rem; color:var(--muted); line-height:1.9;}
+  .contact a{color:var(--red); text-decoration:none;}
+  .contact a:hover{text-decoration:underline;}
+  .contact .sep{color:var(--accent-soft); margin:0 .5rem; opacity:.6;}
+  .lede{margin:1.1rem 0 0; font-family:"Newsreader",Georgia,serif; font-style:italic;
+    font-size:1.05rem; color:#3a4653;}
 
-  .page {
-    width: 100%;
-    height: auto;
-    background: var(--sheet);
-    border-radius: 3px;
-    box-shadow: 0 1px 2px rgba(27, 36, 48, 0.08),
-                0 12px 30px rgba(27, 36, 48, 0.12);
-  }
+  /* sections */
+  section{margin-top:2rem;}
+  h2.sec{font-size:.82rem; letter-spacing:.13em; text-transform:uppercase; color:var(--accent);
+    font-weight:600; margin:0 0 .2rem; font-family:"Inter",sans-serif;}
+  .sec-rule{height:2px; background:var(--accent); opacity:.85; border-radius:2px; margin-bottom:1rem;}
 
-  .empty {
-    max-width: 640px;
-    text-align: center;
-    color: var(--muted);
-    font-size: 0.95rem;
-    line-height: 1.6;
-    background: var(--sheet);
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 8px 24px rgba(27, 36, 48, 0.08);
-  }
-  .empty code { background: #eef1f5; padding: 0.1em 0.4em; border-radius: 4px; }
+  .entry{margin-bottom:1.4rem;}
+  .entry-head{display:flex; gap:1rem; justify-content:space-between; align-items:flex-start;}
+  .entry-titles h3{margin:0; font-size:1.06rem; color:var(--ink); font-weight:600;}
+  .entry-titles .note{color:var(--muted); font-weight:400; font-size:.85rem;}
+  .entry-titles .area{font-weight:400; color:var(--ink);}
+  .org{color:var(--accent); font-size:.96rem; margin-top:.1rem;}
+  .edunote{font-style:italic; color:var(--red); font-size:.9rem; margin-top:.15rem;}
+  .entry-meta{flex:none; text-align:right; display:flex; flex-direction:column; align-items:flex-end; gap:.4rem; min-width:120px;}
+  .dates{color:var(--muted); font-size:.85rem; white-space:nowrap;}
+  .logo{max-height:46px; max-width:120px; width:auto; height:auto; object-fit:contain;}
+  .summary{margin:.5rem 0 .4rem; color:var(--red);}
+  .entry ul{margin:.4rem 0 0; padding-left:1.15rem;}
+  .entry li{margin:.28rem 0;}
+  .entry li strong{color:var(--ink);}
 
-  footer {
-    text-align: center;
-    padding: 2rem 1rem 3rem;
-    font-size: 0.82rem;
-    color: var(--muted);
+  /* skills */
+  .skill-row{display:grid; grid-template-columns:230px 1fr; gap:.6rem 1rem; padding:.32rem 0;
+    border-bottom:1px solid var(--rule);}
+  .skill-row:last-child{border-bottom:0;}
+  .skill-name{font-weight:600; color:var(--accent);}
+  .skill-kw{color:var(--ink);}
+
+  .langs{font-size:1rem;} .langs .muted{color:var(--muted);} .langs .sep{color:var(--accent-soft); margin:0 .5rem; opacity:.6;}
+  .pubs{color:var(--ink);} .pubs a{color:var(--red);}
+
+  footer{max-width:880px; margin:0 auto; text-align:center; padding:1.5rem 1rem 3rem; font-size:.85rem; color:var(--muted);}
+  footer a{color:var(--red); text-decoration:none;} footer a:hover{text-decoration:underline;}
+  footer .sep{margin:0 .5rem; color:var(--accent-soft); opacity:.6;}
+
+  @media (max-width:640px){
+    header.cv{flex-direction:column-reverse; align-items:flex-start; gap:1rem;}
+    .avatar{width:82px;height:106px;}
+    .entry-head{flex-direction:column; gap:.35rem;}
+    .entry-meta{flex-direction:row; align-items:center; text-align:left; min-width:0;}
+    .skill-row{grid-template-columns:1fr;}
   }
-  footer a { color: var(--accent); text-decoration: none; }
-  footer a:hover { text-decoration: underline; }
+  @media print{.bar{display:none;} body{background:#fff;} .sheet{box-shadow:none; margin:0; max-width:none;}}
 </style>
 </head>
 <body>
-  <header>
-    <div class="brand">
-      <span class="name">{{NAME}}</span>
-      <span class="role">{{ROLE}}</span>
-    </div>
-    <a class="download" href="./cv.pdf" download>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/>
-      </svg>
+  <div class="bar">
+    <span class="who">{{NAME}}</span>
+    <a class="btn" href="./{{PDF_NAME}}" download="{{PDF_NAME}}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
       Download PDF
     </a>
-  </header>
+  </div>
 
-  <main>
-    <!-- CV_PAGES -->
+  <main class="sheet">
+    <div class="sheet-accent"></div>
+    <div class="inner">
+      <header class="cv">
+        <div>
+          <h1 class="name">{{NAME}}</h1>
+          <p class="role">{{ROLE}}</p>
+        </div>
+        {{PHOTO}}
+      </header>
+      <div class="contact">{{CONTACT}}</div>
+      <p class="lede">{{SUMMARY}}</p>
+
+      <section>
+        <h2 class="sec">Experience</h2><div class="sec-rule"></div>
+        {{EXPERIENCE}}
+      </section>
+
+      <section>
+        <h2 class="sec">Education</h2><div class="sec-rule"></div>
+        {{EDUCATION}}
+      </section>
+
+      <section>
+        <h2 class="sec">Skills</h2><div class="sec-rule"></div>
+        {{SKILLS}}
+      </section>
+
+      <section>
+        <h2 class="sec">Languages</h2><div class="sec-rule"></div>
+        <div class="langs">{{LANGUAGES}}</div>
+      </section>
+
+      <section>
+        <h2 class="sec">Publications</h2><div class="sec-rule"></div>
+        <div class="pubs">{{PUBLICATIONS}}</div>
+      </section>
+    </div>
   </main>
 
-  <footer>
-    {{FOOTER_LINKS}}
-  </footer>
+  <footer>{{FOOTER}}</footer>
 </body>
 </html>
