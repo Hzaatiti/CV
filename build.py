@@ -252,6 +252,13 @@ def logo_html(path):
     return f'<img class="logo" src="{esc(path)}" alt="">'
 
 
+def logo_cell(path):
+    """Right-hand logo column for an entry (empty string when there's no logo)."""
+    if not path:
+        return ""
+    return f'<div class="entry-logo"><img class="logo" src="{esc(path)}" alt=""></div>'
+
+
 def render_site(resume, fm, tpl):
     import shutil
     b = resume["basics"]
@@ -286,18 +293,19 @@ def render_site(resume, fm, tpl):
         if j.get("highlights"):
             items = "".join(f"<li>{highlight_html(h)}</li>" for h in j["highlights"])
             bullets = f"<ul>{items}</ul>"
-        exp.append(f'''<article class="entry">
-        <div class="entry-head">
-          <div class="entry-titles">
-            <h3>{esc(j["position"])}{note}</h3>
-            <div class="org">{esc(j["name"])}</div>
-          </div>
-          <div class="entry-meta">
+        cls = "entry" if j.get("logo") else "entry no-logo"
+        exp.append(f'''<article class="{cls}">
+        <div class="entry-body">
+          <div class="entry-head">
+            <div class="entry-titles">
+              <h3>{esc(j["position"])}{note}</h3>
+              <div class="org">{esc(j["name"])}</div>
+            </div>
             <span class="dates">{daterange_html(j.get("startDate",""), j.get("endDate",""))}</span>
-            {logo_html(j.get("logo",""))}
           </div>
+          {summary}{bullets}
         </div>
-        {summary}{bullets}
+        {logo_cell(j.get("logo",""))}
       </article>''')
 
     # Education
@@ -305,18 +313,19 @@ def render_site(resume, fm, tpl):
     for e in resume["education"]:
         area = f', {esc(e["area"])}' if e.get("area") else ""
         note = f'<div class="edunote">{esc(e["note"])}</div>' if e.get("note") else ""
-        edu.append(f'''<article class="entry">
-        <div class="entry-head">
-          <div class="entry-titles">
-            <h3>{esc(e["studyType"])}<span class="area">{area}</span></h3>
-            <div class="org">{esc(e["institution"])}</div>
-            {note}
-          </div>
-          <div class="entry-meta">
+        cls = "entry" if e.get("logo") else "entry no-logo"
+        edu.append(f'''<article class="{cls}">
+        <div class="entry-body">
+          <div class="entry-head">
+            <div class="entry-titles">
+              <h3>{esc(e["studyType"])}<span class="area">{area}</span></h3>
+              <div class="org">{esc(e["institution"])}</div>
+              {note}
+            </div>
             <span class="dates">{daterange_html(e.get("startDate",""), e.get("endDate",""))}</span>
-            {logo_html(e.get("logo",""))}
           </div>
         </div>
+        {logo_cell(e.get("logo",""))}
       </article>''')
 
     # Skills

@@ -121,6 +121,7 @@
       link(b.url, b.url.replace("https://", "").replace("http://", ""))))
   }
   let contact-box = box(
+    width: 6.2cm,
     fill: rgb("#eef3fb"), stroke: 0.7pt + accent, radius: 3pt, inset: 9pt,
     {
       set text(size: 8.6pt)
@@ -135,13 +136,14 @@
     }
     if b.at("caption", default: "") != "" {
       v(0.3em)
-      text(size: 7.5pt, style: "italic", fill: rgb("#666666"), "*" + b.caption)
+      set par(justify: false, leading: 0.4em)
+      align(center, text(size: 7.5pt, style: "italic", fill: rgb("#666666"), "*" + b.caption))
     }
   }
 
   grid(
-    columns: (1fr, auto, auto),
-    column-gutter: 1.1em,
+    columns: (1fr, auto, 3.1cm),
+    column-gutter: 1.0em,
     align: (left + top, left + top, center + top),
     left-col, contact-box, right-col,
   )
