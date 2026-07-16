@@ -73,18 +73,18 @@
     font-weight:600; margin:0 0 .2rem; font-family:"Inter",sans-serif;}
   .sec-rule{height:2px; background:var(--accent); opacity:.85; border-radius:2px; margin-bottom:1rem;}
 
-  .entry{display:grid; grid-template-columns:1fr 165px; column-gap:1.6rem;
-    align-items:center; margin-bottom:1.5rem;}
-  .entry.no-logo{grid-template-columns:1fr;}
+  .entry{display:grid; grid-template-columns:1fr 160px; column-gap:1.6rem;
+    align-items:start; margin-bottom:1.6rem;}
+  .entry.no-logo{grid-template-columns:1fr auto;}
   .entry-body{min-width:0;}
-  .entry-head{display:flex; gap:1rem; justify-content:space-between; align-items:flex-start;}
   .entry-titles h3{margin:0; font-size:1.06rem; color:var(--ink); font-weight:600;}
   .entry-titles .note{color:var(--muted); font-weight:400; font-size:.85rem;}
   .entry-titles .area{font-weight:400; color:var(--ink);}
   .org{color:var(--accent); font-size:.96rem; margin-top:.1rem;}
   .edunote{font-style:italic; color:var(--red); font-size:.9rem; margin-top:.15rem;}
-  .dates{color:var(--muted); font-size:.85rem; white-space:nowrap; flex:none; padding-top:.15rem;}
-  .entry-logo{display:flex; align-items:center; justify-content:center; padding:.2rem .3rem;}
+  .entry-aside{display:flex; flex-direction:column; align-items:center; gap:.7rem; text-align:center;}
+  .dates{color:var(--muted); font-size:.85rem; white-space:nowrap;}
+  .entry-logo{display:flex; align-items:center; justify-content:center;}
   .entry-logo .logo{max-width:100%; max-height:82px; width:auto; height:auto; object-fit:contain;}
   .summary{margin:.5rem 0 .4rem; color:var(--red);}
   .entry ul{margin:.4rem 0 0; padding-left:1.15rem;}
@@ -108,10 +108,10 @@
   @media (max-width:640px){
     header.cv{flex-direction:column-reverse; align-items:flex-start; gap:1rem;}
     .avatar{width:82px;height:106px;}
-    .entry{grid-template-columns:1fr; row-gap:.5rem;}
+    .entry, .entry.no-logo{grid-template-columns:1fr; row-gap:.6rem;}
+    .entry-aside{flex-direction:row; align-items:center; justify-content:flex-start; gap:1rem;}
     .entry-logo{justify-content:flex-start;}
     .entry-logo .logo{max-height:56px;}
-    .entry-head{flex-direction:column; gap:.35rem;}
     .skill-row{grid-template-columns:1fr;}
   }
   @media print{.bar{display:none;} body{background:#fff;} .sheet{box-shadow:none; margin:0; max-width:none;}}

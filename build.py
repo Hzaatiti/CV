@@ -296,16 +296,16 @@ def render_site(resume, fm, tpl):
         cls = "entry" if j.get("logo") else "entry no-logo"
         exp.append(f'''<article class="{cls}">
         <div class="entry-body">
-          <div class="entry-head">
-            <div class="entry-titles">
-              <h3>{esc(j["position"])}{note}</h3>
-              <div class="org">{esc(j["name"])}</div>
-            </div>
-            <span class="dates">{daterange_html(j.get("startDate",""), j.get("endDate",""))}</span>
+          <div class="entry-titles">
+            <h3>{esc(j["position"])}{note}</h3>
+            <div class="org">{esc(j["name"])}</div>
           </div>
           {summary}{bullets}
         </div>
-        {logo_cell(j.get("logo",""))}
+        <div class="entry-aside">
+          <span class="dates">{daterange_html(j.get("startDate",""), j.get("endDate",""))}</span>
+          {logo_cell(j.get("logo",""))}
+        </div>
       </article>''')
 
     # Education
@@ -316,16 +316,16 @@ def render_site(resume, fm, tpl):
         cls = "entry" if e.get("logo") else "entry no-logo"
         edu.append(f'''<article class="{cls}">
         <div class="entry-body">
-          <div class="entry-head">
-            <div class="entry-titles">
-              <h3>{esc(e["studyType"])}<span class="area">{area}</span></h3>
-              <div class="org">{esc(e["institution"])}</div>
-              {note}
-            </div>
-            <span class="dates">{daterange_html(e.get("startDate",""), e.get("endDate",""))}</span>
+          <div class="entry-titles">
+            <h3>{esc(e["studyType"])}<span class="area">{area}</span></h3>
+            <div class="org">{esc(e["institution"])}</div>
+            {note}
           </div>
         </div>
-        {logo_cell(e.get("logo",""))}
+        <div class="entry-aside">
+          <span class="dates">{daterange_html(e.get("startDate",""), e.get("endDate",""))}</span>
+          {logo_cell(e.get("logo",""))}
+        </div>
       </article>''')
 
     # Skills
