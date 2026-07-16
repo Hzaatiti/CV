@@ -92,9 +92,9 @@
   let left-col = {
     text(size: 24pt, weight: "bold", fill: black, b.name)
     if b.at("summary", default: "") != "" {
-      v(0.6em)
+      v(0.45em)
       set text(size: 8.5pt, fill: rgb("#333333"))
-      set par(justify: true)
+      set par(justify: true, leading: 0.5em)
       b.summary
     }
   }
@@ -122,10 +122,10 @@
   }
   let contact-box = box(
     width: 6.2cm,
-    fill: rgb("#eef3fb"), stroke: 0.7pt + accent, radius: 3pt, inset: 9pt,
+    fill: rgb("#eef3fb"), stroke: 0.7pt + accent, radius: 3pt, inset: 6pt,
     {
       set text(size: 8.6pt)
-      rows.join(v(0.4em))
+      rows.join(v(0.12em))
     },
   )
 
